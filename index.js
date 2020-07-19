@@ -1,5 +1,32 @@
 'use strict';
 
+class QueueIterator {
+
+  constructor(queue) {
+
+    this._queue = queue;
+    this._start = queue._head;
+
+  }
+
+  next() {
+
+    if (this._start > this._queue._tale) {
+      return {
+        value: undefined,
+        done: true,
+      };
+    }
+
+    return {
+      value: this._queue[`_${this._start++}`],
+      done: this._start > this._queue._tale,
+    };
+
+  }
+
+}
+
 
 class Queue {
 
