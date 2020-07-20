@@ -6,7 +6,6 @@ class QueueIterator {
 
     this._queue = queue;
     this._start = queue._head;
-
   }
 
   next() {
@@ -27,7 +26,6 @@ class QueueIterator {
 
 }
 
-
 class Queue {
 
   constructor(maxSize, ...args) {
@@ -40,11 +38,9 @@ class Queue {
       throw new RangeError();
     }
 
-
     this._maxSize = maxSize;
     this._head = 0;
     this._tale = 0;
-
 
     for (let arg of args) {
       this.enqueue(arg);
@@ -98,5 +94,43 @@ class Queue {
 
 }
 
-const q = new Queue(100, 1,2,3,4,5);
-const arr = [...q];
+class PriorityQueue extends Queue {
+
+  constructor(maxSize, ...args) {
+    super(maxSize);
+
+    for (let arg of args) {
+      this.enqueue(arg);
+    }
+
+  }
+
+  enqueue({value, priority}) {
+
+    if (this._tale >= this._maxSize) {
+      throw new RangeError('Stack overflow');
+    }
+    if (typeof priority !== 'number') {
+      throw new TypeError();
+    }
+    if (priority < 0 || isNaN(priority) || !Number.isSafeInteger(priority)) {
+      throw new RangeError();
+    }
+    this[`_${this._tale++}`] = {value, priority};
+
+    const sortedByPriority = [...this].sort((a, b) => {
+      return a.priority - b.priority;
+    });
+
+    let counter = 0;
+    for (let i = this._head; i < this._tale; i++) {
+      this[`_${i}`] = sortedByPriority[counter++];
+    }
+
+    return this._tale;
+  }
+
+}
+
+const pq = new PriorityQueue(100, {value: 1, priority: 3},
+    {value: 2, priority: 2}, {value: 3, priority: 1});
